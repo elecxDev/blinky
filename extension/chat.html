@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Blinky - Your Safety Buddy</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE066 0%, #FFD700 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #FFE066 0%, #FFD700 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #FFA500;
+        }
+        
+        .blinky-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: block;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #FAFAFA;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .message.user .message-content {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .message.blinky .message-content {
+            background: #FFE066;
+            border: 2px solid #FFA500;
+        }
+        
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #FFA500;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #FFA500;
+            border-radius: 25px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .send-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+        }
+        
+        .send-btn:hover {
+            background: #45a049;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="images/blinky_happy.png" alt="Blinky" class="blinky-avatar">
+            <h2>👻 Chat with Blinky</h2>
+            <p>Your friendly safety buddy is here to help!</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message blinky">
+                <img src="images/blinky_wink.png" alt="Blinky" class="message-avatar">
+                <div class="message-content">
+                    Hi there! I'm Blinky, your digital safety buddy! 👻✨ I'm here to help you stay safe online and answer any questions you have about dealing with mean messages or scary situations. What's on your mind today?
+                </div>
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            Blinky is thinking... 👻💭
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="messageInput" class="input-field" placeholder="Ask Blinky anything about staying safe online..." maxlength="500">
+            <button id="sendBtn" class="send-btn">Send 💬</button>
+        </div>
+    </div>
+    
+    <script src="chat.js"></script>
+</body>
+</html>

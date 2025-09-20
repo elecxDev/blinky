@@ -3,12 +3,30 @@
 const API_URL = 'http://localhost:5000/analyze';
 
 // Create context menu for manual scanning
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   chrome.contextMenus.create({
     id: "blinky-scan-text",
     title: "Ask Blinky to check this text",
     contexts: ["selection"]
   });
+  
+  // Open onboarding page on first install or if setup not completed
+  if (details.reason === 'install') {
+    console.log('👻 Blinky installed! Opening setup page.');
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('onboarding.html')
+    });
+  } else {
+    // Check if setup is completed on reload/update
+    chrome.storage.local.get(['setupComplete'], (result) => {
+      if (!result.setupComplete) {
+        console.log('👻 Setup not completed. Opening setup page.');
+        chrome.tabs.create({
+          url: chrome.runtime.getURL('onboarding.html')
+        });
+      }
+    });
+  }
 });
 
 // Handle context menu clicks
@@ -103,6 +121,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         .then(data => sendResponse({ online: true, status: data }))
         .catch(() => sendResponse({ online: false }));
       return true;
+      
+    case 'OPEN_CHAT_PAGE':
+      chrome.tabs.create({ url: chrome.runtime.getURL('chat.html') });
+      break;
   }
 });
 

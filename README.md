@@ -2,6 +2,45 @@
 
 Blinky is a browser extension designed as a digital "safety buddy" for children, providing real-time protection against cyberbullying, online grooming, inappropriate content, and scams using AI-powered text analysis.
 
+## 🚀 Quick Installation Guide
+
+### Prerequisites
+- Python 3.8+ installed
+- Chrome browser
+- Internet connection
+
+### Step 1: Download & Setup Backend
+```bash
+# Clone or download the project
+cd Blinky/backend
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start the AI analysis server
+python server.py
+```
+**✅ Server should start on `localhost:5000`**
+
+### Step 2: Install Browser Extension
+1. Open Chrome and go to `chrome://extensions`
+2. Enable **"Developer mode"** (toggle in top right)
+3. Click **"Load unpacked"**
+4. Select the `Blinky/extension` folder
+5. ✅ Blinky icon should appear in your extensions bar!
+
+### Step 3: Parent/Guardian Setup
+- Extension will automatically open setup page on first install
+- Enter parent contact information for emergency alerts
+- Complete the child safety configuration
+
+### Step 4: Test Installation
+1. Visit any social media site (Instagram, Discord, etc.)
+2. Type a test message like "you're stupid" 
+3. ✅ Blinky should highlight it and show warnings!
+
+**🎉 Installation Complete! Blinky is now protecting your child online.**
+
 ---
 
 ## 🎯 Problem Statement
@@ -94,18 +133,29 @@ python server.py
 - **JavaScript**: Chrome Extension APIs, Manifest V3
 - **CSS**: Child-friendly UI with Comic Sans and bright colors
 - **HTML**: Popup interface and content injection
+- **Chat Interface**: Real-time AI chatbot integration
 
 ### **Backend (AI Analysis)**
 - **Python**: FastAPI web server
-- **AI Models**: Hugging Face transformers (toxic-bert)
+- **AI Models**: 
+  - Hugging Face transformers (toxic-bert) for threat detection
+  - Mistral AI for intelligent chatbot responses
 - **Pattern Matching**: Regex-based threat detection
-- **API**: RESTful endpoint for text analysis
+- **API**: RESTful endpoints for analysis and chat
 
 ### **Detection Methods**
-- **Bullying**: Insults, aggressive language, exclusion
+- **Bullying**: Insults, aggressive language, exclusion, severe threats (kys)
 - **Grooming**: Secrecy requests, manipulation tactics
 - **Inappropriate**: Sexual content, age-inappropriate topics
 - **Scams**: Phishing attempts, personal info requests
+
+### **Safety Features**
+- **Real-time Monitoring**: Scans new content as it appears
+- **Smart Highlighting**: Grammarly-style visual warnings
+- **Collapsible Notifications**: Organized threat alerts in sidebar
+- **Emergency Contacts**: Parent/guardian contact integration
+- **AI Chat Companion**: 24/7 safety guidance and support
+- **Hover Tooltips**: Detailed threat explanations on hover
 
 ---
 
@@ -132,6 +182,39 @@ python server.py
 - **No Data Storage**: No permanent storage of analyzed content
 - **Minimal Permissions**: Only accesses text content for analysis
 - **Child Privacy**: No tracking or data collection
+- **Secure API**: Environment variables protect sensitive keys
+- **Parent Control**: Emergency contacts stored locally only
+
+## 📚 Technical Documentation
+
+### **API Endpoints**
+
+#### `POST /analyze`
+```json
+{
+  "text": "message content",
+  "context": "discord|instagram|general"
+}
+```
+
+#### `POST /chat`
+```json
+{
+  "message": "Someone is being mean to me online"
+}
+```
+
+### **Threat Detection Algorithm**
+1. **Pattern Matching**: Regex patterns for known threats
+2. **AI Analysis**: Toxic-BERT model scoring (0-100)
+3. **Weighted Scoring**: Grooming ×1.5, Severe threats +80
+4. **Risk Classification**: HIGH ≥70, MEDIUM ≥40, LOW ≥20
+
+### **Extension Components**
+- **Content Script**: DOM monitoring and threat highlighting
+- **Background Script**: Installation flow and context menus
+- **Chat System**: AI companion with Mistral integration
+- **Onboarding**: Parent setup and emergency contacts
 
 ---
 

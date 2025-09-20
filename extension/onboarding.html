@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinky Setup - Parent/Guardian Configuration</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE066 0%, #FFD700 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .blinky-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0 0 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #FFA500;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FF8800;
+            box-shadow: 0 0 10px rgba(255, 136, 0, 0.3);
+        }
+        
+        .info-box {
+            background: #FFF8DC;
+            border: 2px solid #FFA500;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            margin: 0 0 10px;
+            color: #FF8800;
+        }
+        
+        .setup-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+            margin-top: 20px;
+        }
+        
+        .setup-btn:hover {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature {
+            background: #F0F8FF;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/blinky_happy.png" alt="Blinky" class="blinky-logo">
+            <h1>👻 Welcome to Blinky!</h1>
+            <p class="subtitle">Your child's digital safety companion</p>
+        </div>
+        
+        <div class="info-box">
+            <h3>🛡️ Parent/Guardian Setup Required</h3>
+            <p>Please provide your contact information for emergency alerts and reports when Blinky detects serious threats to your child's online safety.</p>
+        </div>
+        
+        <form id="setupForm">
+            <div class="form-group">
+                <label for="parentName">Parent/Guardian Name:</label>
+                <input type="text" id="parentName" name="parentName" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="parentEmail">Email Address:</label>
+                <input type="email" id="parentEmail" name="parentEmail" required placeholder="your.email@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="parentPhone">Phone Number:</label>
+                <input type="tel" id="parentPhone" name="parentPhone" required placeholder="+1 (555) 123-4567">
+            </div>
+            
+            <div class="form-group">
+                <label for="childName">Child's Name:</label>
+                <input type="text" id="childName" name="childName" required placeholder="Enter your child's name">
+            </div>
+        </form>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🚨</div>
+                <strong>Real-time Alerts</strong>
+                <p>Instant notifications for high-risk threats</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <strong>Safety Reports</strong>
+                <p>Weekly summaries of online activity</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <strong>Smart Detection</strong>
+                <p>AI-powered threat identification</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                <strong>Family Friendly</strong>
+                <p>Educational, not restrictive approach</p>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔒 Privacy & Security</h3>
+            <p><strong>Your data is safe:</strong> Contact information is stored locally and only used for emergency communications. Blinky doesn't track browsing history or store personal conversations.</p>
+        </div>
+        
+        <button type="button" class="setup-btn" onclick="completeSetup()">
+            Complete Blinky Setup 👻
+        </button>
+    </div>
+    
+    <script src="onboarding.js"></script>
+</body>
+</html>
