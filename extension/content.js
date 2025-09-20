@@ -86,13 +86,13 @@ class BlinkyMonitor {
     });
   }
   
-  checkTextContent(text) {
+  checkTextContent(text, element = null) {
     const now = Date.now();
     if (now - this.lastScanTime < this.scanDelay) return;
     
     if (text.length > 5 && text.length < 1000 && !this.isUIElement(text)) {
       console.log('🔍 Checking new text content:', text);
-      this.analyzeTextDirect(text, this.detectContext());
+      this.analyzeTextDirect(text, this.detectContext(), element);
       this.lastScanTime = now;
     }
   }
@@ -343,8 +343,89 @@ class BlinkyMonitor {
       this.blinkyPanel = null;
     }
   }
+  
+  highlightUnsafeText(element, data) {
+    const text = element.textContent;
+    if (!text) return;
+    
+    // Create highlight wrapper
+    const highlight = document.createElement('span');
+    highlight.className = `blinky-highlight ${data.threat_level.toLowerCase()}`;
+    highlight.style.cssText = `
+      background: ${data.threat_level === 'HIGH' ? '#ff4444' : data.threat_level === 'MEDIUM' ? '#ff8800' : '#ffaa00'};
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    `;
+    highlight.textContent = text;
+    highlight.title = `Blinky detected: ${data.findings.join(', ')}`;
+    
+    // Add click handler to show details
+    highlight.addEventListener('click', () => {
+      this.showSidebarNotification(data, text);
+    });
+    
+    // Replace original element
+    element.parentNode.replaceChild(highlight, element);
+    
+    // Auto-show in sidebar
+    this.showSidebarNotification(data, text);
+  }
+  
+  showSidebarNotification(data, text) {
+    // Create or update sidebar
+    let sidebar = document.getElementById('blinky-sidebar');
+    if (!sidebar) {
+      sidebar = this.createSidebar();
+      document.body.appendChild(sidebar);
+    }
+    
+    // Add notification to sidebar
+    const notification = document.createElement('div');
+    notification.className = `blinky-notification ${data.threat_level.toLowerCase()}`;
+    notification.innerHTML = `
+      <div class="notification-header">
+        <img src="${chrome.runtime.getURL(`images/blinky_${data.blinky_emotion}.png`)}" class="mini-blinky">
+        <span class="threat-badge">${data.threat_level}</span>
+        <button class="close-notification" onclick="this.parentElement.parentElement.remove()">×</button>
+      </div>
+      <div class="notification-content">
+        <div class="detected-text">"${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"</div>
+        <div class="findings">${data.findings.slice(0, 2).join(', ')}</div>
+        ${data.suggestions.length > 0 ? `<div class="suggestion">${data.suggestions[0]}</div>` : ''}
+      </div>
+    `;
+    
+    const notificationsList = sidebar.querySelector('.notifications-list');
+    notificationsList.insertBefore(notification, notificationsList.firstChild);
+    
+    // Limit to 5 notifications
+    const notifications = notificationsList.children;
+    if (notifications.length > 5) {
+      notifications[notifications.length - 1].remove();
+    }
+  }
+  
+  createSidebar() {
+    const sidebar = document.createElement('div');
+    sidebar.id = 'blinky-sidebar';
+    sidebar.innerHTML = `
+      <div class="sidebar-header">
+        <img src="${chrome.runtime.getURL('images/blinky_neutral.png')}" class="sidebar-blinky">
+        <h3>Blinky Safety</h3>
+        <button class="toggle-sidebar" onclick="document.getElementById('blinky-sidebar').classList.toggle('collapsed')">−</button>
+      </div>
+      <div class="notifications-list"></div>
+      <div class="sidebar-footer">
+        <small>Click highlighted text for details</small>
+      </div>
+    `;
+    return sidebar;
+  }
 
-  async analyzeTextDirect(text, context = 'manual') {
+  async analyzeTextDirect(text, context = 'manual', element = null) {
     try {
       console.log('📞 Making direct API call for:', text.substring(0, 50));
       
@@ -368,7 +449,7 @@ class BlinkyMonitor {
       
       if (result.success && result.data.score >= 20) {
         console.log('⚠️ Adding threat to batch, score:', result.data.score);
-        this.addThreatToBatch(result.data, text);
+        this.addThreatToBatch(result.data, text, element);
       } else {
         console.log('✅ Content is safe, score:', result.data.score);
         this.showSafeMessage(context);
@@ -397,8 +478,13 @@ class BlinkyMonitor {
     }
   }
   
-  addThreatToBatch(data, text) {
-    this.pendingThreats.push({ data, text });
+  addThreatToBatch(data, text, element = null) {
+    this.pendingThreats.push({ data, text, element });
+    
+    // Highlight immediately if element provided
+    if (element && element.parentNode) {
+      this.highlightUnsafeText(element, data);
+    }
     
     // Clear existing timeout
     if (this.batchTimeout) {
@@ -408,35 +494,18 @@ class BlinkyMonitor {
     // Set new timeout to show batched threats
     this.batchTimeout = setTimeout(() => {
       this.showBatchedThreats();
-    }, 2000); // Wait 2 seconds for more threats
+    }, 1000); // Reduced to 1 second
   }
   
   showBatchedThreats() {
     if (this.pendingThreats.length === 0) return;
     
-    // Find highest threat level
-    const highestThreat = this.pendingThreats.reduce((max, current) => 
-      current.data.score > max.data.score ? current : max
-    );
+    console.log(`📊 Processing ${this.pendingThreats.length} batched threats`);
     
-    // Combine all findings
-    const allFindings = [];
-    const allSuggestions = [];
-    
+    // Show each threat as sidebar notification
     this.pendingThreats.forEach(threat => {
-      allFindings.push(...threat.data.findings);
-      allSuggestions.push(...threat.data.suggestions);
+      this.showSidebarNotification(threat.data, threat.text);
     });
-    
-    // Create combined threat data
-    const combinedData = {
-      ...highestThreat.data,
-      findings: [...new Set(allFindings)].slice(0, 5), // Remove duplicates, limit to 5
-      suggestions: [...new Set(allSuggestions)].slice(0, 3) // Remove duplicates, limit to 3
-    };
-    
-    console.log(`📊 Showing ${this.pendingThreats.length} batched threats`);
-    this.showBlinkyWarning(combinedData, `${this.pendingThreats.length} unsafe items detected`);
     
     // Clear pending threats
     this.pendingThreats = [];
