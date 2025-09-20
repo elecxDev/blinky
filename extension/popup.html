@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      min-height: 400px;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #FFE066 0%, #FFD700 100%);
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #FFA500;
+    }
+
+    .blinky-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #FFA500;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      color: #333;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 12px;
+      margin: 5px 0 0 0;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .scan-section {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .scan-section h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 14px;
+    }
+
+    #textInput {
+      width: 100%;
+      height: 80px;
+      border: 2px solid #FFA500;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 12px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    #textInput:focus {
+      outline: none;
+      border-color: #FF8C00;
+      box-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+    }
+
+    .scan-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 10px;
+      transition: all 0.3s;
+    }
+
+    .scan-btn:hover {
+      background: #45a049;
+      transform: scale(1.02);
+    }
+
+    .scan-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .status.online {
+      border-left: 4px solid #4CAF50;
+      color: #2E7D32;
+    }
+
+    .status.offline {
+      border-left: 4px solid #FF5722;
+      color: #D32F2F;
+    }
+
+    .result {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .result.safe {
+      border-left: 4px solid #4CAF50;
+    }
+
+    .result.unsafe {
+      border-left: 4px solid #FF5722;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .result-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .result-title {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .result-content {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #FFA500;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .tips {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 11px;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    .tips strong {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="images/blinky_happy.png" alt="Blinky" class="blinky-logo">
+    <h1 class="title">Blinky Safety Buddy</h1>
+    <p class="subtitle">Your friendly digital safety companion</p>
+  </div>
+
+  <div class="content">
+    <div id="status" class="status">
+      Checking Blinky status...
+    </div>
+
+    <div class="scan-section">
+      <h3>🔍 Ask Blinky to check a message</h3>
+      <textarea id="textInput" placeholder="Paste a message here and I'll check if it's safe for you!"></textarea>
+      <button id="scanBtn" class="scan-btn">Ask Blinky to Check</button>
+    </div>
+
+    <div id="result" class="result">
+      <div class="result-header">
+        <img id="resultAvatar" src="images/blinky_happy.png" alt="Blinky" class="result-avatar">
+        <div id="resultTitle" class="result-title"></div>
+      </div>
+      <div id="resultContent" class="result-content"></div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <div>Blinky is checking...</div>
+    </div>
+
+    <div class="tips">
+      <strong>💡 Tips:</strong><br>
+      • Right-click on any text and select "Ask Blinky to check this text"<br>
+      • Blinky automatically watches for unsafe messages on social media<br>
+      • Always talk to a trusted adult if something makes you uncomfortable
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

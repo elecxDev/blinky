@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Blinky - AI Safety Companion",
+  "version": "1.0.0",
+  "description": "Your friendly digital safety buddy that helps keep you safe online",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost:5000/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Blinky Safety Buddy",
+    "default_icon": {
+      "16": "images/blinky_happy.png",
+      "32": "images/blinky_happy.png",
+      "48": "images/blinky_happy.png",
+      "128": "images/blinky_happy.png"
+    }
+  },
+  "icons": {
+    "16": "images/blinky_happy.png",
+    "32": "images/blinky_happy.png",
+    "48": "images/blinky_happy.png",
+    "128": "images/blinky_happy.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
